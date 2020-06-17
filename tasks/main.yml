@@ -1,0 +1,28 @@
+---
+# tasks file for nginx-k8s-oidc
+
+- name: Create nginx-config.yaml
+  template:
+    src: templates/nginx-config.yaml.j2
+    dest: files/nginx-config.yaml
+
+- name: Create nginx-plus-ingress.yaml
+  template:
+    src: templates/nginx-plus-ingress.yaml.j2
+    dest: files/nginx-plus-ingress.yaml
+
+- name: Create openid_connect.js
+  template:
+    src: templates/openid_connect.js.j2
+    dest: files/openid_connect.js
+
+- name: Create openid_connect.server_conf
+  template:
+    src: templates/openid_connect.server_conf.j2
+    dest: files/openid_connect.server_con
+
+- name: Create headless.yaml
+  template:
+    src: templates/headless.yaml.j2
+    dest: files/headless.yaml
+  when: oidc_headless

@@ -127,3 +127,18 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Any private crt and keys
+*.crt
+*.key
+__pycache__
+*~
+\#*
+
+# OS Specific
+Thumbs.db
+.DS_Store
+.vscode
+
+# Ansible specific
+*.retry
