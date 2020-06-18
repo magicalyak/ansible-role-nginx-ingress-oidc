@@ -10,7 +10,7 @@ data:
   main_snippets: |
     load_module modules/ngx_http_js_module.so;
 {% if oidc_headless %}
-  stream-snippets:
+  stream-snippets: |
     resolver {{ oidc_kube_dns | default("kube-dns.kube-system.svc.cluster.local") }} valid=5s;
 
     server {
@@ -237,7 +237,7 @@ data:
         {{ '{{' }}end -{{ '}}' }}
 
         {{ '{{' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
-        include conf.d/openid_connect.server_conf; # Authorization code flow and Relying Party processing
+        include conf.d/openid_connect.server_conf; # Authorization codse flow and Relying Party processing
         
         {{ '{{' }}- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"{{ '}}' }}
         {{ '{{' }}- if not $oidc_error_message{{ '}}' }}{{ '{{' }}$oidc_error_message = "NGINX / OpenID Connect login failure\n"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
