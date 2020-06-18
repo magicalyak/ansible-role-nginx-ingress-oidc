@@ -6,7 +6,7 @@ metadata:
 data:
 {% if oidc_external_status_address is defined %}
   external-status-address: {{ oidc_external_status_address }}
-{% endif %}}
+{% endif %}
   main_snippets: |
     load_module modules/ngx_http_js_module.so;
 {% if oidc_headless %}
