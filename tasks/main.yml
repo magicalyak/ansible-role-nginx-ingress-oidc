@@ -11,7 +11,7 @@
   blockinfile:
     path: "{{ oidc_files_location }}/nginx-config.yaml"
     insertafter: '\$http_user_agent'
-    block: "{{ lookup('file', {{ oidc_http_block_file }}) }}"
+    block: "{{ lookup('file', "{{ oidc_http_block_file }}") }}"
   when: oidc_http_block_file is defined
 
 - name: Create nginx-plus-ingress.yaml
