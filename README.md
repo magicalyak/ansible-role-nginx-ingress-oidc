@@ -138,7 +138,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
 Kubernetes Process
 ------------------
 
-## Verify Files
+**Verify Files**
 
 Use the files in ./files to configure the ingress controller
 You should have 4 or 5 files depending on your options.
@@ -155,14 +155,14 @@ drwxr-xr-x   7 tom.gamull  staff    224 Jun 17 15:54 ..
 -rw-r--r--   1 tom.gamull  staff   3850 Jun 17 15:57 openid_connect.server_conf
 ```
 
-## Create Kubernetes Ingress Resources
+**Create Kubernetes Ingress Resources**
 
 Modify the nginx-plus-ingress.yaml if needed for proxy settings, etc.
 Modify the nginx-plus-service.yaml in the kubernetes-ingress/deployments/service directory as appropriate
 Create the ingress resource as normal but specify the nginx-config.yaml located here
 Create the configmaps (these shouldn't change after you import the first time)
 
-### First Time Install
+**First Time Install**
 
 ```bash
 NGINX_K8S_GIT_DIR=/home/centos/git/kubernetes-ingress
@@ -186,7 +186,7 @@ kubectl apply -f service/nginx-plus-service.yaml  # Make sure this exists and yo
 cd $NGINX_K8S_OIDC_DIR
 ```
 
-### Previous Install
+**Previous Install**
 
 Uncomment lines if you're upgrading the ingress controller from an earlier version.
 
@@ -208,7 +208,7 @@ kubectl -n nginx-ingress deployments nginx-ingress --replicas=0
 kubectl -n nginx-ingress deployments nginx-ingress --replicas=4  # Change this to your number (1?)
 ```
 
-## Configure your applications
+**Configure your applications**
 
 Once you finish you can create an application like the cafe example
 
@@ -238,7 +238,7 @@ metadata:
           servicePort: 80
 ```
 
-## Update IDPs
+**Update IDPs**
 
 Simply run the playbook again and it will generate a new nginx-config.yml file (you'll see it in yellow as changed)
 Then just apply the file and you'll only need to configure the app ingress.
