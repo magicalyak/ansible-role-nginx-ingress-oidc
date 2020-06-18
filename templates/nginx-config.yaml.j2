@@ -244,8 +244,7 @@ data:
         set $internal_error_message {{ '{{' }}$oidc_error_message{{ '}}' }};
 
         {{ '{{' }}- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver-address"{{ '}}' }}
-        {{ '{{' }}- if not $oidc_resolver{{ '}}' }}{{ '{{' }}$oidc_resolver = "8.8.8.8"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
-        resolver {{ '{{' }}$oidc_resolver{{ '}}' }};  # For DNS lookup of IdP endpoints;
+        resolver {{ oidc_resolver }}
         
         {{ '{{' }}- $oidc_subrequest_output_buffer_size := index $.Ingress.Annotations "custom.nginx.org/oidc-subrequest-output-buffer-size"{{ '}}' }}
         {{ '{{' }}- if not $oidc_subrequest_output_buffer_size{{ '}}' }}{{ '{{' }}$oidc_subrequest_output_buffer_size = 32k{{ '}}' }}{{ '{{' }}end{{ '}}' }}
