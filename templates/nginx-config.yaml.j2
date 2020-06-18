@@ -239,7 +239,7 @@ data:
         {{ '{{' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
         include conf.d/openid_connect.server_conf; # Authorization code flow and Relying Party processing
         
-        {{ '{{' }}- $oidc_errormsg := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"{{ '}}' }}
+        {{ '{{' }}- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"{{ '}}' }}
         {{ '{{' }}- if not $oidc_error_message{{ '}}' }}{{ '{{' }}$oidc_error_message = "NGINX / OpenID Connect login failure\n"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
         set $internal_error_message {{ '{{' }}$oidc_error_message{{ '}}' }};
 
