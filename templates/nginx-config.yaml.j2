@@ -240,7 +240,7 @@ data:
         include conf.d/openid_connect.server_conf; # Authorization codse flow and Relying Party processing
         
         {{ '{{' }}- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"{{ '}}' }}
-        {{ '{{' }}- if not $oidc_error_message{{ '}}' }}{{ '{{' }}$oidc_error_message = "NGINX / OpenID Connect login failure"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
+        {{ '{{' }}- if not $oidc_error_message{{ '}}' }}{{ '{{' }}$oidc_error_message = {{ '"' }}NGINX / OpenID Connect login failure{{'"'}}{{ '}}' }}{{ '{{' }}end{{ '}}' }}
         set $internal_error_message {{ '{{' }}$oidc_error_message{{ '}}' }};
 
         {{ '{{' }}- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver-address"{{ '}}' }}
