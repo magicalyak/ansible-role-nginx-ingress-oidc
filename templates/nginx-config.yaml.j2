@@ -247,7 +247,7 @@ data:
         resolver {{ oidc_resolver }}
         
         {{ '{{' }}- $oidc_subrequest_output_buffer_size := index $.Ingress.Annotations "custom.nginx.org/oidc-subrequest-output-buffer-size"{{ '}}' }}
-        {{ '{{' }}- if not $oidc_subrequest_output_buffer_size{{ '}}' }}{{ '{{' }}$oidc_subrequest_output_buffer_size = 32k{{ '}}' }}{{ '{{' }}end{{ '}}' }}
+        {{ '{{' }}- if not $oidc_subrequest_output_buffer_size{{ '}}' }}{{ '{{' }}$oidc_subrequest_output_buffer_size = "32k"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
         subrequest_output_buffer_size {{ '{{' }}$oidc_subrequest_output_buffer_size{{ '}}' }};  # To fit a complete tokenset response
         
         {{ '{{' }}- $oidc_gunzip := index $.Ingress.Annotations "custom.nginx.org/oidc-gunzip"{{ '}}' }}
