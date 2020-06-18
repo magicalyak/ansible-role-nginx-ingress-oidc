@@ -251,7 +251,7 @@ data:
         subrequest_output_buffer_size {{ '{{' }}$oidc_subrequest_output_buffer_size{{ '}}' }};  # To fit a complete tokenset response
         
         {{ '{{' }}- $oidc_gunzip := index $.Ingress.Annotations "custom.nginx.org/oidc-gunzip"{{ '}}' }}
-        {{ '{{' }}- if not $oidc_gunzip{{ '}}' }}{{ '{{' }}$oidc_gunzip = on{{ '}}' }}{{ '{{' }}end{{ '}}' }}
+        {{ '{{' }}- if not $oidc_gunzip{{ '}}' }}{{ '{{' }}$oidc_gunzip = "on"{{ '}}' }}{{ '{{' }}end{{ '}}' }}
         gunzip {{ '{{' }}$oidc_gunzip{{ '}}' }};  # Decompress IdP responses if necessary
 
         error_log /var/log/nginx/error.log debug;  # Reduce severity level as required
