@@ -130,6 +130,8 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
         #  scrape: true
         #  port: 9113
+        ingress_type: deployment                      # deployment or replicaset
+        ingress_deployment_count: 1                   # number of ingress controllers
         ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
         ingress_pullpolicy: Always                    # container restart policy
 

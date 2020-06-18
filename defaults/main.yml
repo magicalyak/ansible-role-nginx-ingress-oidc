@@ -76,5 +76,7 @@ ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefi
 #  scrape: true
 #  port: 9113
 
+ingress_type: deployment                      # deployment or replicaset
+ingress_deployment_count: 4                   # number of ingress controllers
 ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
 ingress_pullpolicy: Always                    # container restart policy
