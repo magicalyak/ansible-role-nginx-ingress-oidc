@@ -142,3 +142,7 @@ Thumbs.db
 
 # Ansible specific
 *.retry
+
+# WIP
+scratch
+nginx-oidc-install-custom.yml

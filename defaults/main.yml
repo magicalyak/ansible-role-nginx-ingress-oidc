@@ -1,6 +1,28 @@
 ---
 # defaults file for nginx-k8s-oidc
 
+# Repos to use when automated upstream updating is added
+kubernetes_ingress_github: https://github.com/nginxinc/kubernetes-ingress.git
+kubernetes_ingress_version: v1.7.1
+nginx_openid_connect_github: https://github.com/nginxinc/nginx-openid-connect.git
+nginx_openid_connect_version: R22
+
+# License location for use when dockerfile build is added
+# Location of your NGINX Plus license in your local machine.
+# Default is the files folder within the NGINX Ansible role.
+nginx_license:
+  certificate: license/nginx-repo.crt
+  key: license/nginx-repo.key
+
+# Remove NGINX Plus license and repository after installation for security purposes.
+# Default is false.
+nginx_delete_license: false
+
+# Where to save the files for use with kubernetes
+oidc_files_location: "./files"
+
+# Save copies of previous files
+oidc_backup: false
 
 # Install headless with multiple ingress and key value store sync
 # Default is false
@@ -9,36 +31,37 @@ oidc_headless: false
 oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
 
 # These need to be changed to your appropriate OIDC configuration
-# This won't work without modification
+# This won't work without modification, you must add at least one idp (like idp0 underneath)
 oidc_idps:
-  idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
-                              # You could use the hostname or the client_id if you want, just make this unique per group
-    hostname: default         # make one of these default
-    oidc_authz_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/auth"
-    oidc_token_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/token"
-    oidc_jwt_keyfile: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/certs"
-    oidc_client_id: "a2b20239-2dce-4306-a385-ac9clientid"
-    oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
-    oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
-    oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
-  idp1:
-    hostname: cafe.nginx.net
-    oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
-    oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
-    oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
-    oidc_client_id: "f66df7b0-7378-489a-a98d-clientid"
-    oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
-    oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
-    oidc_hmac_key: ThisHMACNeedsToBeUnique
-  idp2:
-    hostname: cafe.example.com
-    oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
-    oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
-    oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
-    oidc_client_id: "f66df7b0-7378-489a-a98d-clientid2"
-    oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
-    oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
-    oidc_hmac_key: ThisHMACNeedsToBeUnique2
+  # idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
+  #                             # You could use the hostname or the client_id if you want, just make this unique per group
+  #   hostname: default         # make one of these default (there should always be a default)
+  #   oidc_authz_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/auth"
+  #   oidc_token_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/token"
+  #   oidc_jwt_keyfile: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/certs"
+  #   oidc_client_id: "a2b20239-2dce-4306-a385-ac9clientid"
+  #   oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
+  #   #oidc_scopes: "openid+profile+email+offline_access"
+  #   oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
+  #   oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
+  # idp1:
+  #   hostname: cafe.nginx.net
+  #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
+  #   oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
+  #   oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
+  #   oidc_client_id: "f66df7b0-7378-489a-a98d-clientid"
+  #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
+  #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
+  #   oidc_hmac_key: ThisHMACNeedsToBeUnique
+  # idp2:
+  #   hostname: cafe.example.com
+  #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
+  #   oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
+  #   oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
+  #   oidc_client_id: "f66df7b0-7378-489a-a98d-clientid2"
+  #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
+  #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
+  #   oidc_hmac_key: ThisHMACNeedsToBeUnique2
 
 # For customizing the kube-dns or coredns internal name for headless
 oidc_kube_dns: kube-dns.kube-system.svc.cluster.local

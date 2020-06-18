@@ -1,0 +1,4 @@
+# from github
+- name: ansible-role-nginx-ingress-oidc
+  src: https://github.com/magicalyak/ansible-role-nginx-ingress-oidc
+  version: master
