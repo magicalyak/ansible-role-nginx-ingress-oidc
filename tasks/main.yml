@@ -10,7 +10,7 @@
 - name: Insert any http ingress code in nginx-config.yaml
   blockinfile:
     path: "{{ oidc_files_location }}/nginx-config.yaml"
-    insertbefore: '^.*log_format main_jwt.*$'
+    insertbefore: (\slog_format main_jwt)
     block: |2
        map $jwt_claim_preferred_username $jwt_nibr521 {
          default $jwt_claim_preferred_username;
