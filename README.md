@@ -47,14 +47,22 @@ No other Ansible Galaxy roles are needed at the present time.  You could build s
 Installation
 ------------
 
-Download the git repo and modify the vars as mentioned above (I usually add my customization to the playbook itself).
+You have a couple options here:
+
+You can install the role from galaxy and create a playbook like below
+
+```bash
+ansible-galaxy install magicalyak.ansible_role_nginx_ingress_oidc
+```
+
+You can Download the git repo and modify the vars as mentioned above (I usually add my customization to the playbook itself).
 
 ```bash
 ansible-galaxy install git+https://github.com/magicalyak/ansible-role-nginx-ingress-oidc.git
 #OR
 git clone https://github.com/magicalyak/ansible-role-nginx-ingress-oidc.git
 cd ansible-role-nginx-ingress-oidc
-ansible-galaxy install -r requirements.yml
+ansible-galaxy install -f -r requirements.yml
 cd -
 ```
 
@@ -71,7 +79,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
 
   tasks:
     - include_role:
-        name: ansible-role-nginx-ingress-oidc
+        name: magicalyak.ansible_role_nginx_ingress_oidc
       vars:
         oidc_files_location: "/home/centos/git/ansible-role-nginx-ingress-oidc/files"  # Where we place our generated files
         oidc_backup: true             # Save copies of previous files
