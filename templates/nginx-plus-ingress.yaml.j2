@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-{% if ingress_type == "deployment" %}
+{% if ingress_type|lower == "deployment" %}
 kind: Deployment
 {% else %}
 kind: DaemonSet
@@ -8,8 +8,9 @@ metadata:
   name: nginx-ingress
   namespace: nginx-ingress
 spec:
-{% if ingress_type == "deployment" %}
+{% if ingress_type|lower == "deployment" %}
   replicas: {{ ingress_deployment_count }}
+{% endif %}
   selector:
     matchLabels:
       app: nginx-ingress
