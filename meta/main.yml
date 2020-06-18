@@ -43,11 +43,9 @@ galaxy_info:
 
   galaxy_tags:
     - nginx
-    - nginx-plus
     - kubernetes
     - oidc
     - ingress
-    - kubernetes-ingress
     - oauth2
     - jwt
 
