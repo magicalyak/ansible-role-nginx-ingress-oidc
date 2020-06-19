@@ -16,7 +16,7 @@
          default $jwt_claim_preferred_username;
          ~^(?<username>.*)@(?<domain>.*)$ "${username}";
        }
-    marker: ""
+    #marker: ""
   when: oidc_http_block_file is defined
 
 - name: Create nginx-plus-ingress.yaml
