@@ -100,10 +100,10 @@ data:
     # configuration for {{ '{{' }}.Ingress.Namespace{{ '}}' }}/{{ '{{' }}.Ingress.Name{{ '}}' }}
 
     {{ '{{- ' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
+    # OIDC Custom Code HTTP
     log_format main_jwt '$remote_addr - $jwt_claim_sub [$time_local] "$request" $status '
                         '$body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
 
-    # OIDC Custom Code
     {{ '{{- ' }}end{{ '}}' }}
 
     {{ '{{' }}range $upstream := .Upstreams{{ '}}' }}
@@ -234,6 +234,7 @@ data:
         {{ '{{' }}end -{{ '}}' }}
 
         {{ '{{' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
+        # OIDC Custom Code Server
         include conf.d/openid_connect.server_conf; # Authorization codse flow and Relying Party processing
         
         {{ '{{' }}- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"{{ '}}' }}
@@ -335,6 +336,7 @@ data:
             {{ '{{' }}end{{ '}}' }}
 
             {{ '{{' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
+            # OIDC Custom Code Location
             auth_jwt "" token=$session_jwt;
             error_page 401 = @do_oidc_flow;
             auth_jwt_key_request /_jwks_uri;
