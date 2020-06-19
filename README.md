@@ -81,59 +81,59 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
 - hosts: localhost
   gather_facts: false
   connection: local
+  vars:
+    oidc_files_location: "/home/centos/git/ansible-role-nginx-ingress-oidc/files"  # Where we place our generated files
+    oidc_backup: true             # Save copies of previous files
+    oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
+    oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
+    oidc_idps:
+      idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
+                                  # You could use the hostname or the client_id if you want, just make this unique per group
+        hostname: default         # make one of these default (this applies to any unmatched host as a catch-all)
+        oidc_authz_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/auth"
+        oidc_token_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/token"
+        oidc_jwt_keyfile: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/certs"
+        oidc_client_id: "a2b20239-2dce-4306-a385-ac9clientid"
+        oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
+        oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
+        oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
+      idp1:
+        hostname: cafe.nginx.net  # This only will apply the configuration to the host "cafe.nginx.net"
+        oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
+        oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
+        oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
+        oidc_client_id: "f66df7b0-7378-489a-a98d-clientid"
+        oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
+        oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
+        oidc_hmac_key: ThisHMACNeedsToBeUnique
+      idp2:
+        hostname: cafe.example.com
+        oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
+        oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
+        oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
+        oidc_client_id: "f66df7b0-7378-489a-a98d-clientid2"
+        oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
+        oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
+        oidc_hmac_key: ThisHMACNeedsToBeUnique2
+
+    oidc_kube_dns: coredns.kube-system.svc.k8s.nginx.net                        # Only change if customized or coredns is default
+    oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.k8s.nginx.net  # Only change if customized
+    oidc_keyval_size: 1M                          # keyval store size (1M)
+    oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
+    oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
+    ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
+    #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
+    #  scrape: true
+    #  port: 9113
+    ingress_type: deployment                      # deployment or replicaset
+    ingress_deployment_count: 1                   # number of ingress controllers
+    ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
+    ingress_pullpolicy: Always                    # container restart policy
 
   tasks:
     - include_role:
         name: magicalyak.ansible_role_nginx_ingress_oidc
-      vars:
-        oidc_files_location: "/home/centos/git/ansible-role-nginx-ingress-oidc/files"  # Where we place our generated files
-        oidc_backup: true             # Save copies of previous files
-        oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
-        oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
-        oidc_idps:
-          idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
-                                      # You could use the hostname or the client_id if you want, just make this unique per group
-            hostname: default         # make one of these default (this applies to any unmatched host as a catch-all)
-            oidc_authz_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/auth"
-            oidc_token_endpoint: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/token"
-            oidc_jwt_keyfile: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/certs"
-            oidc_client_id: "a2b20239-2dce-4306-a385-ac9clientid"
-            oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
-            oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
-            oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
-          idp1:
-            hostname: cafe.nginx.net  # This only will apply the configuration to the host "cafe.nginx.net"
-            oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
-            oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
-            oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
-            oidc_client_id: "f66df7b0-7378-489a-a98d-clientid"
-            oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
-            oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
-            oidc_hmac_key: ThisHMACNeedsToBeUnique
-          idp2:
-            hostname: cafe.example.com
-            oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
-            oidc_token_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/token"
-            oidc_jwt_keyfile: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/discovery/v2.0/keys"
-            oidc_client_id: "f66df7b0-7378-489a-a98d-clientid2"
-            oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
-            oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
-            oidc_hmac_key: ThisHMACNeedsToBeUnique2
-
-        oidc_kube_dns: coredns.kube-system.svc.k8s.nginx.net                        # Only change if customized or coredns is default
-        oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.k8s.nginx.net  # Only change if customized
-        oidc_keyval_size: 1M                          # keyval store size (1M)
-        oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
-        oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
-        ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
-        ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
-        #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
-        #  scrape: true
-        #  port: 9113
-        ingress_type: deployment                      # deployment or replicaset
-        ingress_deployment_count: 1                   # number of ingress controllers
-        ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
-        ingress_pullpolicy: Always                    # container restart policy
 
 ```
 
@@ -206,8 +206,6 @@ NGINX_K8S_OIDC_DIR=/home/centos/nginx-openid-connect
 cd $NGINX_K8S_OIDC_DIR
 kubectl apply -f nginx-config.yaml
 #kubectl apply -f nginx-plus-ingress.yaml
-kubectl -n nginx-ingress deployments nginx-ingress --replicas=0
-kubectl -n nginx-ingress deployments nginx-ingress --replicas=4  # Change this to your number (1?)
 ```
 
 **Configure your applications**
@@ -251,9 +249,6 @@ cd /home/centos/nginx-openid-connect
 vim nginx-oidc-install-custom.yml # Add the new app and IDP
 ansible-playbook nginx-oidc-install-custom.yml
 kubectl apply -f nginx-config.yml
-# Scale the deployment down to 0 and back up
-kubectl -n nginx-ingress deployments nginx-ingress --replicas=0
-kubectl -n nginx-ingress deployments nginx-ingress --replicas=4  # Change this to your number (1?)
 ```
 
 License
