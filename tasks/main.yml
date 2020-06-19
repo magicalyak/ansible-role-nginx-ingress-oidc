@@ -11,7 +11,7 @@
   blockinfile:
     path: "{{ oidc_files_location }}/nginx-config.yaml"
     insertafter: '^.*(# OIDC Custom Code)$'
-    block: |2
+    block: |
        map $jwt_claim_preferred_username $jwt_nibr521 {
          default $jwt_claim_preferred_username;
          ~^(?<username>.*)@(?<domain>.*)$ "${username}";
