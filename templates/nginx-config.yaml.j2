@@ -103,6 +103,7 @@ data:
     log_format main_jwt '$remote_addr - $jwt_claim_sub [$time_local] "$request" $status '
                         '$body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
 
+    # OIDC Custom Code
     {{ '{{- ' }}end{{ '}}' }}
 
     {{ '{{' }}range $upstream := .Upstreams{{ '}}' }}
