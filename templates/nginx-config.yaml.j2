@@ -99,11 +99,11 @@ data:
   ingress-template: |
     # configuration for {{ '{{' }}.Ingress.Namespace{{ '}}' }}/{{ '{{' }}.Ingress.Name{{ '}}' }}
 
-    {{ '{{' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ '}}' }}
+    {{ '{{ -' }}if index $.Ingress.Annotations "custom.nginx.org/oidc"{{ ' }}' }}
     log_format main_jwt '$remote_addr - $jwt_claim_sub [$time_local] "$request" $status '
                         '$body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
 
-    {{ '{{' }}end{{ '}}' }}
+    {{ '{{ -' }}end{{ ' }}' }}
 
     {{ '{{' }}range $upstream := .Upstreams{{ '}}' }}
     upstream {{ '{{' }}$upstream.Name{{ '}}' }} {
