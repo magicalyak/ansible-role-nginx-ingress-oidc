@@ -321,7 +321,7 @@ Use something similar to below:
       when: apply_nginx_config
 ```
 
-Or include some header values from the jwt claim.  Please not these are exposed to the upstream server and not the end user (you won't see these in developer mode on chrome, but your upstream applicaiton will).
+Then in your application ingress add some header values from the jwt claim. Please not these are exposed to the upstream server and not the end user (you won't see these in developer mode on chrome, but your upstream applicaiton will).
 
 ```yaml
 # This is the application ingress file for a sample application
