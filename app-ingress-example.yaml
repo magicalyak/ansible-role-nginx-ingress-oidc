@@ -1,0 +1,33 @@
+# This is the application ingress file for a sample application
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cafe-ingress
+  annotations:
+    custom.nginx.org/oidc:  "on"
+    nginx.org/location-snippets: |
+      proxy_set_header username $jwt_claim_sub;
+      proxy_set_header jwt-email $jwt_claim_email;
+      proxy_set_header jwt-username $jwt_claim_preferred_username;
+      proxy_set_header jwt-name $jwt_claim_name;
+      proxy_set_header jwt-aud $jwt_claim_aud;
+      proxy_set_header jwt-firstname $jwt_claim_given_name;
+      proxy_set_header jwt-lastname $jwt_claim_family_name;
+      proxy_set_header jwt-sample1 $jwt_sample1;
+spec:
+  tls:
+  - hosts:
+    - cafe.nginx.net
+    secretName: cafe-secret
+  rules:
+  - host: cafe.nginx.net
+    http:
+      paths:
+      - path: /tea
+        backend:
+          serviceName: tea-svc
+          servicePort: 80
+      - path: /coffee
+        backend:
+          serviceName: coffee-svc
+          servicePort: 80

@@ -238,6 +238,127 @@ metadata:
           servicePort: 80
 ```
 
+**Exposing JWT Claims in the application**
+
+Use something similar to below:
+
+```yaml
+---
+- hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    replace_http_custom: True
+    apply_nginx_config: False
+    oidc_files_location: "."  # Where we place our generated files
+    oidc_backup: false            # Save copies of previous files
+    oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
+    #oidc_external_status_address: 172.16.186.100
+    oidc_resolver: 8.8.8.8
+    oidc_idps:
+      idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
+                                  # You could use the hostname or the client_id if you want, just make this unique per group
+        hostname: default         # make one of these default
+        oidc_authz_endpoint: "https://##REPLACEME##/authorize"
+        oidc_token_endpoint: "https://##REPLACEME##/token"
+        oidc_jwt_keyfile: "https://##REPLACEME##/keys"
+        oidc_client_id: "##CLIENTID##"
+        oidc_client_secret: "##SECRET##"
+        oidc_logout_redirect: "https://##REPLACEME##/logout"
+        oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+      idp1:
+        hostname: cafe.nginx.net
+        oidc_authz_endpoint: "https://##REPLACEME##/authorize"
+        oidc_token_endpoint: "https://##REPLACEME##/token"
+        oidc_jwt_keyfile: "https://##REPLACEME##/keys"
+        oidc_client_id: "##CLIENTID##"
+        oidc_client_secret: "##SECRET##"
+        oidc_logout_redirect: "https://##REPLACEME##/logout"
+        oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+      idp2:
+        hostname: cafe.example.com
+        oidc_authz_endpoint: "https://##REPLACEME##/authorize"
+        oidc_token_endpoint: "https://##REPLACEME##/token"
+        oidc_jwt_keyfile: "https://##REPLACEME##/keys"
+        oidc_client_id: "##CLIENTID##"
+        oidc_client_secret: "##SECRET##"
+        oidc_logout_redirect: "https://##REPLACEME##/logout"
+        oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+    oidc_keyval_size: 1M                          # keyval store size (1M)
+    oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
+    oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    ingress_type: deployment                      # deployment or replicaset
+    ingress_deployment_count: 1                   # number of ingress controllers
+    #ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
+    ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
+    #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
+    #  scrape: true
+    #  port: 9113
+    ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
+    ingress_pullpolicy: Always                    # container restart policy
+
+  tasks:
+    - include_role:
+        name: magicalyak.ansible_role_nginx_ingress_oidc
+
+    # This converts the preffered username (email) into a username by stripping off the @domain.com
+    - name: Add custom variables to nginx-config.yml HTTP Ingress context
+      blockinfile:
+        path: "{{ oidc_files_location }}/nginx-config.yaml"
+        insertafter: "^.{4}js_import oidc from conf.d/openid_connect.js;$"
+        block: |2
+              map $jwt_claim_preferred_username $jwt_sample1 {
+                default $jwt_claim_preferred_username;
+                ~^(?<username>.*)@(?<domain>.*)$ "${username}";
+              }
+        marker: "    # {mark} ANSIBLE MANAGED BLOCK"
+      when: replace_http_custom
+
+    - name: Apply nginx-config.yaml
+      k8s:
+        state: present
+        src: "{{ oidc_files_location }}/nginx-config.yaml"
+      when: apply_nginx_config
+```
+
+Or include some header values from the jwt claim.  Please not these are exposed to the upstream server and not the end user (you won't see these in developer mode on chrome, but your upstream applicaiton will).
+
+```yaml
+# This is the application ingress file for a sample application
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cafe-ingress
+  annotations:
+    custom.nginx.org/oidc:  "on"
+    nginx.org/location-snippets: |
+      proxy_set_header username $jwt_claim_sub;
+      proxy_set_header jwt-email $jwt_claim_email;
+      proxy_set_header jwt-username $jwt_claim_preferred_username;
+      proxy_set_header jwt-name $jwt_claim_name;
+      proxy_set_header jwt-aud $jwt_claim_aud;
+      proxy_set_header jwt-firstname $jwt_claim_given_name;
+      proxy_set_header jwt-lastname $jwt_claim_family_name;
+      proxy_set_header jwt-sample1 $jwt_sample1;
+spec:
+  tls:
+  - hosts:
+    - cafe.nginx.net
+    secretName: cafe-secret
+  rules:
+  - host: cafe.nginx.net
+    http:
+      paths:
+      - path: /tea
+        backend:
+          serviceName: tea-svc
+          servicePort: 80
+      - path: /coffee
+        backend:
+          serviceName: coffee-svc
+          servicePort: 80
+```
+
 **Update IDPs**
 
 Simply run the playbook again and it will generate a new nginx-config.yml file (you'll see it in yellow as changed)
