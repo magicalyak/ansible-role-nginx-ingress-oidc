@@ -75,6 +75,15 @@ COPY internal/configs/version1/nginx-plus.ingress.tmpl \
 # and use it as a certificate and key for the default server
 # ADD default.pem /etc/nginx/secrets/default
 
+RUN echo 'export http_proxy="http://10.10.1.10:8000/"\n\
+export https_proxy="http://10.10.1.10:8000/"\n\
+export no_proxy="127.0.0.1,localhost,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"\n\
+export HTTP_PROXY="http://10.10.1.10:8080/"\n\
+export HTTPS_PROXY="http://10.10.1.10:8080/"\n\
+export NO_PROXY="127.0.0.1,localhost,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8"\n'\
+>> /etc/profile.d/proxy.sh \
+&& chmod +x /etc/profile.d/proxy.sh
+
 USER nginx
 
 ENTRYPOINT ["/nginx-ingress"]
