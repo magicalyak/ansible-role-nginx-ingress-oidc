@@ -294,6 +294,7 @@ data:
             {{ '{{' }}- if $location.ProxyBufferSize{{ '}}' }}
             grpc_buffer_size {{ '{{' }}$location.ProxyBufferSize{{ '}}' }};
             {{ '{{' }}- end{{ '}}' }}
+{% if not nospiffe %}
             {{ '{{' }}if $.SpiffeCerts{{ '}}' }}
             grpc_ssl_certificate /etc/nginx/secrets/spiffe_cert.pem;
             grpc_ssl_certificate_key /etc/nginx/secrets/spiffe_key.pem;
@@ -303,6 +304,7 @@ data:
             grpc_ssl_verify_depth 25;
             grpc_ssl_name {{ '{{' }}$location.ProxySSLName{{ '}}' }};
             {{ '{{' }}end{{ '}}' }}
+{% endif %}}
             {{ '{{' }}if $location.SSL{{ '}}' }}
             grpc_pass grpcs://{{ '{{' }}$location.Upstream.Name{{ '}}' }};
             {{ '{{' }}else{{ '}}' }}
@@ -358,6 +360,7 @@ data:
             {{ '{{' }}- if $location.ProxyMaxTempFileSize{{ '}}' }}
             proxy_max_temp_file_size {{ '{{' }}$location.ProxyMaxTempFileSize{{ '}}' }};
             {{ '{{' }}- end{{ '}}' }}
+{% if not nospiffe %}
             {{ '{{' }}if $.SpiffeCerts{{ '}}' }}
             proxy_ssl_certificate /etc/nginx/secrets/spiffe_cert.pem;
             proxy_ssl_certificate_key /etc/nginx/secrets/spiffe_key.pem;
@@ -367,6 +370,7 @@ data:
             proxy_ssl_verify_depth 25;
             proxy_ssl_name {{ '{{' }}$location.ProxySSLName{{ '}}' }};
             {{ '{{' }}end{{ '}}' }}
+{% endif %}
             {{ '{{' }}if $location.SSL{{ '}}' }}
             proxy_pass https://{{ '{{' }}$location.Upstream.Name{{ '}}' }}{{ '{{' }}$location.Rewrite{{ '}}' }};
             {{ '{{' }}else{{ '}}' }}
