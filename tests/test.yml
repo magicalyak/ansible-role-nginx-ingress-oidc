@@ -1,5 +1,4 @@
 ---
 - hosts: localhost
-  remote_user: root
   roles:
-    - nginx-k8s-oidc
+    - magicalyak.ansible_role_nginx_ingress_oidc
