@@ -80,6 +80,3 @@ ingress_type: deployment                      # deployment or replicaset
 ingress_deployment_count: 4                   # number of ingress controllers
 ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
 ingress_pullpolicy: Always                    # container restart policy
-
-# Option to remove the spiffe grpc sections if they error.
-nospiffe: false
