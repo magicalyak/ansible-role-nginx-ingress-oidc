@@ -12,7 +12,7 @@ data:
     load_module modules/ngx_http_js_module.so;
 {% if oidc_headless %}
   stream-snippets: |
-    resolver [% oidc_kube_dns | default("kube-dns.kube-system.svc.cluster.local") %] valid=5s;
+    resolver [% oidc_kube_dns | default("kube-dns.kube-system.svc.cluster.local") %] valid=[% oidc_resolver_timeout | default('5s') %];
 
     server {
         listen 0.0.0.0:12345;
@@ -247,7 +247,7 @@ data:
         {{- if not $oidc_gunzip}}{{$oidc_gunzip = "on"}}{{end}}
         gunzip {{$oidc_gunzip}};  # Decompress IdP responses if necessary
 
-        error_log /var/log/nginx/error.log debug;  # Reduce severity level as required
+        error_log /var/log/nginx/error.log [% oidc_errorlog_level | default('debug') %];  # Reduce severity level as required
         {{end}}
 
         {{range $location := $server.Locations}}
