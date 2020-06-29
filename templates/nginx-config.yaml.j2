@@ -27,7 +27,7 @@ data:
 
     map $host $oidc_authz_endpoint {
 {% for idp in oidc_idps.values() %}
-        "[% idp.hostname %]" [% idp.oidc_authz_endpoint %];
+        [% idp.hostname %] [% idp.oidc_authz_endpoint %];
 {% endfor %}
     }
 
