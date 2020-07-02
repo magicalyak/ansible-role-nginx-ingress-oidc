@@ -30,11 +30,11 @@ metadata:
   namespace: {{ socat_namespace }}
 {% endif %}
 data:
-  DOMAIN: {{ socat_domain }}
-  PROXY_AUTH: {{ socat_proxy_auth }}
-  PROXY_IP: {{ socat_proxy_ip }}
-  PROXY_PORT: {{ socat_proxy_port }}
-  SOCAT_PORT: {{ socat_port }}
+  DOMAIN: "{{ socat_domain }}"
+  PROXY_AUTH: "{{ socat_proxy_auth }}"
+  PROXY_IP: "{{ socat_proxy_ip }}"
+  PROXY_PORT: "{{ socat_proxy_port }}"
+  SOCAT_PORT: "{{ socat_port }}"
 ---
 apiVersion: apps/v1
 kind: Deployment
