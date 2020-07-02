@@ -236,7 +236,7 @@ data:
         {{- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"}}
         set $internal_error_message [% '"NGINX / OpenID Connect login failure";' %]
 
-        {{- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver-address"}}
+        {{- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver"}}
         resolver [% oidc_resolver %];
         
         {{- $oidc_subrequest_output_buffer_size := index $.Ingress.Annotations "custom.nginx.org/oidc-subrequest-output-buffer-size"}}
