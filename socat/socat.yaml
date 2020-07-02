@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: socat
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: socat
+  labels:
+    app: socat
+spec:
+  ports:
+  - port: 443
+    name: tcp
+  selector:
+    app: socat
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: socat-config
+data:
+  DOMAIN: "login.microsoftonline.com:443"
+  PROXY_AUTH: "root:root"
+  PROXY_IP: "10.233.96.129"
+  PROXY_PORT: "3128"
+  SOCAT_PORT: "443"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: socat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: socat
+  template:
+    metadata:
+      labels:
+        app: socat
+    spec:
+      serviceAccountName: socat
+      containers:
+      - name: socat
+        image: magicalyak/socat
+        command: ["/bin/sh", "./start2.sh"]
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: socat-config
