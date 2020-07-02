@@ -32,6 +32,11 @@
     backup: "{{ oidc_backup }}"
   when: socat_enable
 
+- name: Reminder of coredns modification
+  debug:
+    msg: "add the following line in the corends configmap under ready.\nrewrite name login.microsoftonline.com socat.external.svc.cluster.local"
+
+
 - name: Create headless.yaml
   template:
     src: headless.yaml.j2
