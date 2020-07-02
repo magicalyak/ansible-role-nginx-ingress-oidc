@@ -23,7 +23,7 @@ metadata:
 data:
   DOMAIN: "login.microsoftonline.com:443"
   PROXY_AUTH: "root:root"
-  PROXY_IP: "10.233.96.129"
+  PROXY_IP: "10.233.105.159"
   PROXY_PORT: "3128"
   SOCAT_PORT: "443"
 ---
@@ -45,7 +45,7 @@ spec:
       containers:
       - name: socat
         image: magicalyak/socat
-        command: ["/bin/sh", "./start2.sh"]
+        command: ["/bin/sh", "./start.sh"]
         imagePullPolicy: Always
         envFrom:
         - configMapRef:

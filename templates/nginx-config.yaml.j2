@@ -78,7 +78,8 @@ data:
 
     map $scheme $oidc_cookie_flags {
         http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
-        https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
+        # https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
+        https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
     }
 
     # JWK Set will be fetched from $oidc_jwks_uri and cached here - ensure writable by nginx user
