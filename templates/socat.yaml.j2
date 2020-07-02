@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ socat_serviceaccount_name }}
+{% if socat_namespace is defined %}
+  namespace: {{ socat_namespace }}
+{% endif %}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ socat_name }}
+{% if socat_namespace is defined %}
+  namespace: {{ socat_namespace }}
+{% endif %}
+  labels:
+    app: {{ socat_app_name }}
+spec:
+  ports:
+  - port: {{ socat_port }}
+    name: tcp
+  selector:
+    app: {{ socat_app_name }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ socat_configmap_name }}
+{% if socat_namespace is defined %}
+  namespace: {{ socat_namespace }}
+{% endif %}
+data:
+  DOMAIN: {{ socat_domain }}
+  PROXY_AUTH: {{ socat_proxy_auth }}
+  PROXY_IP: {{ socat_proxy_ip }}
+  PROXY_PORT: {{ socat_proxy_port }}
+  SOCAT_PORT: {{ socat_port }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ socat_name }}
+{% if socat_namespace is defined %}
+  namespace: {{ socat_namespace }}
+{% endif %}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ socat_app_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ socat_app_name }}
+    spec:
+      serviceAccountName: {{ socat_serviceaccount_name }}
+      containers:
+      - name: {{ socat_name }}
+        image: {{ socat_image }}
+        args:
+        - -d
+        - -d
+        - -lf
+        - /var/log/socat.log
+        - "{{" TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork "}}"
+        - "{{" PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH) "}}"
+        imagePullPolicy: {{ socat_image_pullpolicy }}
+        envFrom:
+        - configMapRef:
+            name: {{ socat_configmap_name }}
+{% if socat_pullsecret is defined %}
+      imagePullSecrets:
+        - name: {{ socat_pullsecret }}
+{% endif %}
+    

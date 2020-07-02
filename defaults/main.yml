@@ -81,3 +81,20 @@ ingress_type: deployment                      # deployment or replicaset
 ingress_deployment_count: 4                   # number of ingress controllers
 ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
 ingress_pullpolicy: Always                    # container restart policy
+
+# Tunneling ports for forward proxy - Generates a socat.yaml to deploy socat
+# Only works if socat_enable:true
+socat_enable: false
+socat_namespace: external                     # namespace for kube to use
+socat_name: socat                             # name to use for pod and app
+socat_configmap_name: socat-config            # name to use for configmap
+socat_app_name: socat                         # name to use for app= name
+socat_serviceaccount_name: socat              # name to use for socat service account
+socat_domain: login.microsoftonline.com:443   # our token/jwtkey URL we need to proxy
+socat_proxy_auth: root:root                   # this should be unchanged
+socat_proxy_ip: 10.233.105.159                # IP for our forward proxy
+socat_proxy_port: 3128                        # port for our forward proxy
+socat_port: 443                               # port socat listens on
+socat_image: alpine/socat                     # image to use (assumes socat runs by default)
+# socat_pullsecret: rekcod                    # enable to use a container pullsecret
+socat_image_pullpolicy: Always                # Change to IfNotPresent if desired
