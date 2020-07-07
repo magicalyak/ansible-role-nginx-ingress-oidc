@@ -25,12 +25,6 @@ data:
     log_format main_jwt '$remote_addr - $jwt_claim_sub [$time_local] "$request" $status '
                     '$body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
 
-    map $host $oidc_socat_host {
-{% for idp in oidc_idps.values() %}
-        [% idp.hostname %] [% ipd.oidc_socat_hostname %];
-{% endfor %}        
-    } 
-
     map $host $oidc_authz_endpoint {
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% idp.oidc_authz_endpoint %];
@@ -81,6 +75,15 @@ data:
         [% idp.hostname %] [% idp.oidc_hmac_key %];
 {% endfor %}
     }
+
+{% if socat_enable %}
+    map $host $oidc_socat_host {
+        # This should be the socat service dns name for tunnelling
+{% for idp in oidc_idps.values() %}
+        [% idp.hostname %] [% ipd.oidc_socat_hostname | default("") %];
+{% endfor %}        
+    } 
+{% endif %}
 
     map $scheme $oidc_cookie_flags {
         http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
