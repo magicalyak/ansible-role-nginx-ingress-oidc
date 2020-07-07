@@ -82,7 +82,7 @@ data:
         https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
     }
 
-{% if socat_enable is sameas true and socat_coredns is samas false %}
+{% if socat_enable is sameas true and socat_coredns is sameas false %}
     map $host $oidc_socat_host {
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% ipd.oidc_hostname %];
