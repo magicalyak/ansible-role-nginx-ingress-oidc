@@ -76,12 +76,6 @@ data:
 {% endfor %}
     }
 
-    map $scheme $oidc_cookie_flags {
-        http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
-        # https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
-        https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
-    }
-
 {#{% if socat_enable is sameas true and socat_coredns is sameas false %}#}
     map $host $oidc_socat_host {
         # This should be the socat service dns name for tunnelling
@@ -90,6 +84,12 @@ data:
 {% endfor %}        
     } 
 {#{% endif %}#}
+
+    map $scheme $oidc_cookie_flags {
+        http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
+        # https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
+        https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
+    }
 
     # JWK Set will be fetched from $oidc_jwks_uri and cached here - ensure writable by nginx user
     proxy_cache_path /var/cache/nginx/jwk levels=1 keys_zone=jwk:64k max_size=1m;
