@@ -82,6 +82,15 @@ data:
         https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
     }
 
+{% if socat_enable and not coredns %}
+    map $host $oidc_socat_host {
+{% for idp in oidc_idps.values() %}
+        [% idp.hostname %] [% ipd.oidc_hostname %];
+{% endfor %}        
+    }
+    
+{% end if %}
+
     # JWK Set will be fetched from $oidc_jwks_uri and cached here - ensure writable by nginx user
     proxy_cache_path /var/cache/nginx/jwk levels=1 keys_zone=jwk:64k max_size=1m;
 

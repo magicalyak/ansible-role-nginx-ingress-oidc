@@ -62,8 +62,8 @@ spec:
         - -d
         - -lf
         - /var/log/socat.log
-        - "{{" TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork "}}"
-        - "{{" PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH) "}}"
+        - "{{"TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork"}}"
+        - "{{"PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH)"}}"
         imagePullPolicy: {{ socat_image_pullpolicy }}
         envFrom:
         - configMapRef:
