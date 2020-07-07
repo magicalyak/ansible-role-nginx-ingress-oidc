@@ -82,14 +82,14 @@ data:
         https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
     }
 
-{# {% if socat_enable is sameas true and socat_coredns is sameas false %} #}
+{% if socat_enable is sameas true and socat_coredns is sameas false %}
     map $host $oidc_socat_host {
         # This should be the socat service dns name for tunnelling
-{% for idp in oidc_idps.values() %}
+{% for idp in oidc_idps.values() %}}
         [% idp.hostname %] [% ipd.oidc_hostname %];
 {% endfor %}        
     } 
-{# {% endif %} #}
+{% endif %}
 
     # JWK Set will be fetched from $oidc_jwks_uri and cached here - ensure writable by nginx user
     proxy_cache_path /var/cache/nginx/jwk levels=1 keys_zone=jwk:64k max_size=1m;
