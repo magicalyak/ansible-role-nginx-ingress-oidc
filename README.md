@@ -97,7 +97,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
         oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
         oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
-        oidc_hostname: "localhost.example.com"
+        oidc_socat_hostname: "localhost.example.com"
       idp1:
         hostname: cafe.nginx.net  # This only will apply the configuration to the host "cafe.nginx.net"
         oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -107,7 +107,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
         oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
         oidc_hmac_key: ThisHMACNeedsToBeUnique
-        oidc_hostname: "login.microsoftonline.com"
+        oidc_socat_hostname: "login.microsoftonline.com"
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -117,7 +117,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
         oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
         oidc_hmac_key: ThisHMACNeedsToBeUnique2
-        oidc_hostname: "socat.default.svc.cluster.local"     # This is for a socat tunnel if you have a forward proxy
+        oidc_socat_hostname: "socat.default.svc.cluster.local"     # This is for a socat tunnel if you have a forward proxy
 
     oidc_kube_dns: coredns.kube-system.svc.k8s.nginx.net                        # Only change if customized or coredns is default
     oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.k8s.nginx.net  # Only change if customized

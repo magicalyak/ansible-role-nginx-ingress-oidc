@@ -44,7 +44,7 @@ oidc_idps:
   #   #oidc_scopes: "openid+profile+email+offline_access"
   #   oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
   #   oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
-  #   oidc_hostname: locahost.example.com
+  #   oidc_socat_hostname: locahost.example.com
   # idp1:
   #   hostname: cafe.nginx.net
   #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -54,7 +54,7 @@ oidc_idps:
   #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
   #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
   #   oidc_hmac_key: ThisHMACNeedsToBeUnique
-  #   oidc_hostname: login.microsoft.com
+  #   oidc_socat_hostname: login.microsoft.com
   # idp2:
   #   hostname: cafe.example.com
   #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -64,7 +64,7 @@ oidc_idps:
   #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
   #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
   #   oidc_hmac_key: ThisHMACNeedsToBeUnique2
-  #   oidc_hostname: socat.external.svc.cluster.local  # for socat tunneling where forward proxy is present
+  #   oidc_socat_hostname: socat.external.svc.cluster.local  # for socat tunneling where forward proxy is present
 
 # For customizing the kube-dns or coredns internal name for headless
 oidc_kube_dns: kube-dns.kube-system.svc.cluster.local
