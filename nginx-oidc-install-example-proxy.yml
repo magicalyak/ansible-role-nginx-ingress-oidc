@@ -22,7 +22,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
-        oidc_socat_hostname: "login.microsoftonline.com"        # This should be the hostname used or the socat service if redirecting
+        oidc_socat_enable: false                          # Used for not having tunneling
       idp1:
         hostname: cafe.nginx.net
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -32,7 +32,8 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
-        oidc_socat_hostname: "login.microsoftonline.com"   # host header we want to push
+        oidc_socat_enable: true                                # Used for having tunneling
+        oidc_socat_service: "socat.external.svc.k8s.nginx.net" # matches socat service name
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -42,7 +43,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
-        oidc_socat_hostname: "hostname.example.com"
+        oidc_socat_enable: false                          # Used for not having tunneling
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
