@@ -85,7 +85,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
     oidc_files_location: "/home/centos/git/ansible-role-nginx-ingress-oidc/files"  # Where we place our generated files
     oidc_backup: true             # Save copies of previous files
     oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
-    oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
+    oidc_resolver: 8.8.8.8        # kube-dns.kube-system.svc.cluster.default is the default so you probably want to make this 8.8.8.8
     oidc_idps:
       idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
                                   # You could use the hostname or the client_id if you want, just make this unique per group
@@ -97,7 +97,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "kn_3VLh]1I3ods*[DDmMxNmg8xxx"
         oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
         oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
-        oidc_socat_enable: false
+        oidc_socat_enable: false # this is only needed if we enable socat for foward proxy (mark non-tunnelled idps as false)
       idp1:
         hostname: cafe.nginx.net  # This only will apply the configuration to the host "cafe.nginx.net"
         oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -107,7 +107,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
         oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
         oidc_hmac_key: ThisHMACNeedsToBeUnique
-        oidc_socat_enable: true
+        oidc_socat_enable: true # true means we will create a socat service to handle tunnelling to a forward proxy for this idp
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -117,29 +117,26 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
         oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
         oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
         oidc_hmac_key: ThisHMACNeedsToBeUnique2
-        oidc_socat_enable: false
+        oidc_socat_enable: true # this creates another socat service (named cage-example-com-socat.nginx-ingress.svc.cluster.defult)
 
-    oidc_kube_dns: coredns.kube-system.svc.k8s.nginx.net                        # Only change if customized or coredns is default
-    oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.k8s.nginx.net  # Only change if customized
+    oidc_kube_dns: coredns.kube-system.svc.k8s.nginx.net                        # Only change if you don't use coredns as default (maybe kube-dns.kube-system.svc.cluster.default)
+    oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.k8s.nginx.net  # Only change if customized, otherwise it will be nginx-ingress-headless.nginx-ingress.svc.cluster.default
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
-    oidc_errorlog_level: debug                    # default is error
-    ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
+    oidc_errorlog_level: debug                    # default is error you may want debug initially
+    ingress_container_pullsecret: regcred         # Used for dockerhub credentials - this is the name of the pull secret - (if undefined this is not used)
     ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
     #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
     #  scrape: true
     #  port: 9113
     ingress_type: deployment                      # deployment or replicaset
     ingress_deployment_count: 1                   # number of ingress controllers
-    ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
-    ingress_pullpolicy: Always                    # container restart policy
+    ingress_imagename: magicalyak/nginx-plus:OIDC # container image name - change this unless you are me
+    ingress_pullpolicy: Always                    # container restart policy (maybe you want IfNotPresent)
     # socat_enable: true                              # enable socat for tunneling forward proxy
-    # socat_domain: login.microsoftonline.com:443     # where socat should tunnel including the colon and port
     # socat_namespace: external                       # namespace for socat service and deployment (default: default)
     # socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
-    # socat_proxy_port: 3128                          # The port of your forward proxy
-    # socat_port: 443                                 # The port socat shouild listen on (this should be 443)
 
   tasks:
     - include_role:
@@ -180,6 +177,7 @@ Create the configmaps (these shouldn't change after you import the first time)
 NGINX_K8S_GIT_DIR=/home/centos/git/kubernetes-ingress
 NGINX_K8S_OIDC_DIR=/home/centos/nginc-openid-connect
 cd $NGINX_K8S_GIT_DIR/deployments
+git checkout v1.7.2
 kubectl apply -f common/ns-and-sa.yaml
 kubectl apply -f rbac/rbac.yaml
 kubectl apply -f common/default-server-secret.yaml
@@ -213,7 +211,11 @@ NGINX_K8S_OIDC_DIR=/home/centos/nginx-openid-connect
 #kubectl apply -f common/ts-definition.yaml
 #kubectl apply -f common/gc-definition.yaml
 #kubectl apply -f common/global-configuration.yaml
+#kubectl delete configmap -n nginx-ingress openid-connect.js
+#kubectl delete configmap -n nginx-ingress openid-connect.server-conf
 cd $NGINX_K8S_OIDC_DIR
+#kubectl create configmap -n nginx-ingress openid-connect.js --from-file=openid_connect.js
+#kubectl create configmap -n nginx-ingress openid-connect.server-conf --from-file=openid_connect.server_conf
 kubectl apply -f nginx-config.yaml
 #kubectl apply -f nginx-plus-ingress.yaml
 ```
