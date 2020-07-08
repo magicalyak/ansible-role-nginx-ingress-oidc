@@ -2,7 +2,7 @@
 # tasks file for nginx-k8s-oidc
 - name: Set namespace value
   set_fact:
-    oidc_namespace: "{{ oidc_kube_dns | regex_search)'(?<=\\.svc\\.)(.*)') }}"
+    oidc_namespace: "{{ oidc_kube_dns | regex_search('(?<=\\.svc\\.)(.*)') }}"
 
 - name: Create nginx-config.yaml
   template:
