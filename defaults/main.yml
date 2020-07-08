@@ -3,7 +3,7 @@
 
 # Repos to use when automated upstream updating is added
 kubernetes_ingress_github: https://github.com/nginxinc/kubernetes-ingress.git
-kubernetes_ingress_version: v1.7.1
+kubernetes_ingress_version: v1.7.2
 nginx_openid_connect_github: https://github.com/nginxinc/nginx-openid-connect.git
 nginx_openid_connect_version: R22
 
