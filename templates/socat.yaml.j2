@@ -30,7 +30,7 @@ metadata:
   namespace: {{ socat_namespace }}
 {% endif %}
 data:
-{% if item.value.oidc_authz_endpoint | urlsplit('port') is defined %}
+{% if item.value.oidc_authz_endpoint | urlsplit('port') == "" %}
   DOMAIN: "{{ item.value.oidc_authz_endpoint | urlsplit('hostname') }}:{{ item.value.oidc_authz_endpoint | urlsplit('port') }}"
 {% else %}
   DOMAIN: "{{ item.value.oidc_authz_endpoint | urlsplit('hostname') }}:{{ item.value.oidc_authz_endpoint | default('443') }}" 
