@@ -27,23 +27,27 @@ data:
 
     map $host $oidc_authz_endpoint {
 {% for idp in oidc_idps.values() %}
-{% if idp.socat_enable | default (false) %}
-        [% idp.hostname %] [% idp.oidc_authz_endpoint | regex_replace("[% ipd.oidc_authz_endpoint | urlsplit('hostname') %]", "[% idp.oidc_socat_service %]") %]
-{% else %}
         [% idp.hostname %] [% idp.oidc_authz_endpoint %];
-{% endif %}
 {% endfor %}
     }
 
     map $host $oidc_token_endpoint {
 {% for idp in oidc_idps.values() %}
+{% if idp.socat_enable | default (false) %}
+        [% idp.hostname %] [% idp.oidc_token_endpoint | regex_replace("[% ipd.oidc_token_endpoint | urlsplit('hostname') %]", "[% idp.oidc_socat_service %]") %];
+{% else %}
         [% idp.hostname %] [% idp.oidc_token_endpoint %];
+{% endif %}
 {% endfor %}
     }
 
     map $host $oidc_jwt_keyfile {
 {% for idp in oidc_idps.values() %}
+{% if idp.socat_enable | default (false) %}
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile | regex_replace("[% ipd.oidc_jwt_keyfile | urlsplit('hostname') %]", "[% idp.oidc_socat_service %]") %];
+{% else %}
         [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
+{% endif %}
 {% endfor %}
     }
 
