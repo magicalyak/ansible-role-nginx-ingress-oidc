@@ -5,11 +5,12 @@
   vars:
     replace_http_custom: True
     apply_nginx_config: False
-    oidc_files_location: "."  # Where we place our generated files
-    oidc_backup: false            # Save copies of previous files
-    oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
-    #oidc_external_status_address: 172.16.186.100
-    oidc_resolver: 8.8.8.8
+    apply_socat_config: False             # Apply the socat service and deployment
+    oidc_files_location: "."              # Where we place our generated files
+    oidc_backup: false                    # Save copies of previous files
+    oidc_headless: true                   # For multiple ingress keyvalue store sync (comment out if not desired)
+    # oidc_external_status_address: 172.16.186.100
+    oidc_resolver: coredns.kube-system.svc.cluster.local  # default is kube-dns.kube-system.svc.cluster.local
     oidc_idps:
       idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
                                   # You could use the hostname or the client_id if you want, just make this unique per group
@@ -21,6 +22,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_hostname: "login.microsoftonline.com"        # This should be the hostname used or the socat service if redirecting
       idp1:
         hostname: cafe.nginx.net
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -30,6 +32,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_hostname: "socat.external.svc.cluster.local"   # socat service name
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -39,18 +42,28 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_hostname: "hostname.example.com"
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    oidc_errorlog_level: warn                     # default is error
     ingress_type: deployment                      # deployment or replicaset
     ingress_deployment_count: 1                   # number of ingress controllers
-    #ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
+    # ingress_container_pullsecret: regcred       # Used for dockerhub credentials (if undefined this is not used)
     ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
     #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
     #  scrape: true
     #  port: 9113
     ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
     ingress_pullpolicy: Always                    # container restart policy
+
+    socat_enable: true                              # enable socat for tunneling forward proxy
+    socat_domain: login.microsoftonline.com:443     # where socat should tunnel including the colon and port
+    socat_namespace: external                       # namespace for socat service and deployment (default: default)
+    socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
+    socat_proxy_port: 3128                          # The port of your forward proxy
+    socat_port: 443                                 # The port socat shouild listen on (this should be 443)
+
 
   tasks:
     - include_role:
@@ -74,3 +87,9 @@
         state: present
         src: "{{ oidc_files_location }}/nginx-config.yaml"
       when: apply_nginx_config
+
+    - name: Apply tunnel socat.yaml
+      k8s:
+        state: present
+        src: "{{ oidc_files_location }}/socat.yaml"
+      when: apply_socat_config

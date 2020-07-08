@@ -5,11 +5,11 @@
   vars:
     replace_http_custom: True
     apply_nginx_config: False
-    oidc_files_location: "."  # Where we place our generated files
-    oidc_backup: false            # Save copies of previous files
-    oidc_headless: true           # For multiple ingress keyvalue store sync (comment out if not desired)
-    #oidc_external_status_address: 172.16.186.100
-    oidc_resolver: 8.8.8.8
+    oidc_files_location: "."                          # Where we place our generated files
+    oidc_backup: false                                # Save copies of previous files
+    oidc_headless: true                               # For multiple ingress keyvalue store sync (comment out if not desired)
+    # oidc_external_status_address: 172.16.186.100
+    oidc_resolver: 8.8.8.8                            # default is kube-dns.kube-system.svc.cluster.local
     oidc_idps:
       idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
                                   # You could use the hostname or the client_id if you want, just make this unique per group
@@ -42,9 +42,10 @@
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    oidc_errorlog_level: warn                     # default is error
     ingress_type: deployment                      # deployment or replicaset
     ingress_deployment_count: 1                   # number of ingress controllers
-    #ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
+    # ingress_container_pullsecret: regcred       # Used for dockerhub credentials (if undefined this is not used)
     ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
     #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
     #  scrape: true

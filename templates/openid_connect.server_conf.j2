@@ -8,7 +8,7 @@
         proxy_set_header Content-Length "";           # ''
         proxy_pass $oidc_jwt_keyfile;                 # Expecting to find a URI here
         proxy_ignore_headers Cache-Control Expires Set-Cookie; # Does not influence caching
-{% if socat_enable is sameas true and socat_coredns is sameas false %}
+{% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
 {% endif %}
     }
@@ -37,7 +37,7 @@
         proxy_set_body        "grant_type=authorization_code&code=$arg_code&client_id=$oidc_client&client_secret=$oidc_client_secret&redirect_uri=$scheme://$host:$server_port$redir_location";
         proxy_method          POST;
         proxy_pass            $oidc_token_endpoint;
-{% if socat_enable is sameas true and socat_coredns is sameas false %}
+{% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
 {% endif %}
    }
@@ -52,7 +52,7 @@
         proxy_set_body        "grant_type=refresh_token&refresh_token=$arg_token&client_id=$oidc_client&client_secret=$oidc_client_secret";
         proxy_method          POST;
         proxy_pass            $oidc_token_endpoint;
-{% if socat_enable is sameas true and socat_coredns is sameas false %}}
+{% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
 {% endif %}
     }
@@ -65,7 +65,7 @@
         auth_jwt "" token=$arg_token;
         js_content oidc.validateIdToken;
         error_page 500 502 504 @oidc_error;
-{% if socat_enable is sameas true and socat_coredns is sameas false %}
+{% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
 {% endif %}
     }

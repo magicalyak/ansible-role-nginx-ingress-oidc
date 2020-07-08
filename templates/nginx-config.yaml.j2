@@ -76,7 +76,7 @@ data:
 {% endfor %}
     }
 
-{% if socat_enable is sameas true and socat_coredns is sameas false %}
+{% if socat_enable is sameas true %}
     map $host $oidc_socat_host {
         # This should be the socat service dns name for tunnelling
 {% for idp in oidc_idps.values() %}
