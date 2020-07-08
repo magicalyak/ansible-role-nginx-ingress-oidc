@@ -124,6 +124,7 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    oidc_errorlog_level: debug                    # default is error
     ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
     ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
     #ingress_prometheus:                          # Prometheus exporter - If not defined = disabled
@@ -296,6 +297,7 @@ Use something similar to below:
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
+    oidc_errorlog_level: debug                    # default is error
     ingress_type: deployment                      # deployment or replicaset
     ingress_deployment_count: 1                   # number of ingress controllers
     #ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
