@@ -3,7 +3,6 @@
 - name: Set namespace value
   set_fact:
     oidc_namespace: "{{ oidc_kube_dns | regex_search)'(?<=\\.svc\\.)(.*)') }}"
-  debug: oidc_namespace
 
 - name: Create nginx-config.yaml
   template:
