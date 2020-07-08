@@ -10,6 +10,7 @@
         proxy_ignore_headers Cache-Control Expires Set-Cookie; # Does not influence caching
 {% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
+        proxy_ssl_name        $oidc_socat_host;
 {% endif %}
     }
 
@@ -39,6 +40,7 @@
         proxy_pass            $oidc_token_endpoint;
 {% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
+        proxy_ssl_name        $oidc_socat_host;
 {% endif %}
    }
 
@@ -54,6 +56,7 @@
         proxy_pass            $oidc_token_endpoint;
 {% if socat_enable is sameas true %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
+        proxy_ssl_name        $oidc_socat_host;
 {% endif %}
     }
 
