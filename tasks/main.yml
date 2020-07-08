@@ -31,7 +31,7 @@
     dest: "{{ oidc_files_location }}/{{ item.key }}-socat.yaml"
     backup: "{{ oidc_backup }}"
   when: item.value.oidc_socat_enable
-  loop: "{{ lookup('dict', oidc_idps) }}"
+  loop: "{{ oidc_idps|dict2items }}"
 
 - name: Create headless.yaml
   template:
