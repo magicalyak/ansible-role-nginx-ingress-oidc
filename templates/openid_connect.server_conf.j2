@@ -17,6 +17,9 @@
         status_zone "OIDC start";
         js_content oidc.auth;
         default_type text/plain; # In case we throw an error
+{% if socat_enable is sameas true %}
+        proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
+{% endif %}
     }
 
     set $redir_location "/_codexch";
