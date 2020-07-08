@@ -8,7 +8,7 @@
         proxy_set_header Content-Length "";           # ''
         proxy_pass $oidc_jwt_keyfile;                 # Expecting to find a URI here
         proxy_ignore_headers Cache-Control Expires Set-Cookie; # Does not influence caching
-{% if socat_enable is sameas true %}
+{% if socat_enable is sameas true and socat_coredns is sameas false %}
         proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
 {% endif %}
     }
