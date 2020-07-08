@@ -31,7 +31,7 @@
 - name: Create socat.yaml
   template:
     src: socat.yaml.j2
-    dest: "{{ oidc_files_location }}/{{ item.value.hostname }}-socat.yaml"
+    dest: "{{ oidc_files_location }}/{{ item.value.hostname | regex_replace('\\.', '-') }}-socat.yaml"
     backup: "{{ oidc_backup }}"
   when: item.value.oidc_socat_enable
   loop: "{{ oidc_idps|dict2items }}"
