@@ -9,23 +9,23 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ oidc_idps.key }}-socat"
+  name: "{{ oidc_idps[item].hostname }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
   labels:
-    app: "{{ oidc_idps.key }}-socat"
+    app: "{{ oidc_idps[item].hostname }}-socat"
 spec:
   ports:
   - port: {{ socat_port }}
     name: tcp
   selector:
-    app: "{{ oidc_idps.key }}-socat"
+    app: "{{ oidc_idps[item].hostname }}-socat"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ oidc_idps.key }}-socat"
+  name: "{{ oidc_idps[item].hostname }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -39,7 +39,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ oidc_idps.key }}-socat"
+  name: "{{ oidc_idps[item].hostname }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -47,15 +47,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{ oidc_idps.key }}-socat"
+      app: "{{ oidc_idps[item].hostname }}-socat"
   template:
     metadata:
       labels:
-        app: "{{ oidc_idps.key }}-socat"
+        app: "{{ oidc_idps[item].hostname }}-socat"
     spec:
       serviceAccountName: {{ socat_serviceaccount_name }}
       containers:
-      - name: "{{ oidc_idps.key }}-socat"
+      - name: "{{ oidc_idps[item].hostname }}-socat"
         image: {{ socat_image }}
         args:
         - -d
@@ -66,7 +66,7 @@ spec:
         imagePullPolicy: {{ socat_image_pullpolicy }}
         envFrom:
         - configMapRef:
-            name: "{{ oidc_idps.key }}-socat"
+            name: "{{ oidc_idps[item].hostname }}-socat"
 {% if socat_pullsecret is defined %}
       imagePullSecrets:
         - name: {{ socat_pullsecret }}
