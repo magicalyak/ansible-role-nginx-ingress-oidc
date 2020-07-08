@@ -25,6 +25,9 @@
         status_zone "OIDC code exchange";
         js_content oidc.codeExchange;
         error_page 500 502 504 @oidc_error;
+{% if socat_enable is sameas true %}
+        proxy_set_header Host $oidc_socat_host;    # Sets redirect for socat
+{% endif %}
     }
 
     location = /_token {

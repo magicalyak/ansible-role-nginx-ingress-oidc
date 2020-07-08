@@ -60,8 +60,7 @@ spec:
         args:
         - -d
         - -d
-{#        - -lf
-        - /var/log/socat.log#}
+        - -v
         - "{{"TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork"}}"
         - "{{"PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH)"}}"
         imagePullPolicy: {{ socat_image_pullpolicy }}
