@@ -35,7 +35,7 @@ data:
 {% if socat_enable %}
 {% for idp in oidc_idps.values() %}
 {% if idp.oidc_socat_enable %}
-        [% idp.hostname %] [% idp.oidc_token_endpoint | regex_replace(idp.oidc_token_endpoint | urlsplit('hostname'), idp.oidc_socat_service) %];
+        [% idp.hostname %] [% idp.oidc_token_endpoint | regex_replace(idp.oidc_token_endpoint | urlsplit('hostname'), (idp.hostname | regex_replace('\\.', '-')) + "-socat." + socat_namespace|default('nginx-ingress') + ".svc." + oidc_namespace) %];
 {% else %}
         [% idp.hostname %] [% idp.oidc_token_endpoint %];
 {% endif %}
