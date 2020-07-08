@@ -58,11 +58,9 @@
     ingress_pullpolicy: Always                    # container restart policy
 
     socat_enable: true                              # enable socat for tunneling forward proxy
-    socat_domain: login.microsoftonline.com:443     # where socat should tunnel including the colon and port
     socat_namespace: nginx-ingress                  # namespace for socat service and deployment (default: default)
     socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
     socat_proxy_port: 3128                          # The port of your forward proxy
-    socat_port: 443                                 # The port socat shouild listen on (this should be 443)
 
 
   tasks:

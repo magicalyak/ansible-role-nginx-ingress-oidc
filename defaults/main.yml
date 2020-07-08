@@ -91,7 +91,6 @@ socat_enable: false
 # socat_namespace: nginx-ingress              # namespace for kube to use
 socat_app_name: socat                         # name to use for app= name
 socat_serviceaccount_name: socat              # name to use for socat service account
-socat_domain: login.microsoftonline.com:443   # our token/jwtkey URL we need to proxy
 socat_proxy_auth: root:root                   # this should be unchanged
 socat_proxy_ip: 10.233.105.159                # IP for our forward proxy
 socat_proxy_port: 3128                        # port for our forward proxy

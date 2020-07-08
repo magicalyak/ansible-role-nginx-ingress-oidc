@@ -30,7 +30,7 @@ metadata:
   namespace: {{ socat_namespace }}
 {% endif %}
 data:
-  DOMAIN: "{{ socat_domain }}"
+  DOMAIN: "{{ item.value.oidc_authz_endpoint | urlsplit('hostname') }}:{{ item.value.oidc_authz_endpoint | urlsplit('port') | default('443') }}"
   PROXY_AUTH: "{{ socat_proxy_auth }}"
   PROXY_IP: "{{ socat_proxy_ip }}"
   PROXY_PORT: "{{ socat_proxy_port }}"
