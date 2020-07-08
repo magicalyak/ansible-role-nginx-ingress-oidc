@@ -80,7 +80,7 @@ data:
     map $host $oidc_socat_host {
         # This should be the socat service dns name for tunnelling
 {% for idp in oidc_idps.values() %}
-        [% idp.hostname %] [% idp.oidc_socat_hostname | default("") %];
+        [% idp.hostname %] [% idp.oidc_socat_hostname %];
 {% endfor %}        
     } 
 {% endif %}
