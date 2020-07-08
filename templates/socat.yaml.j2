@@ -9,31 +9,23 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-{% for item in oidc_idps.values() %}
-  name: "{{ item.key }}-socat"
-{% endfor %}
+  name: "{{ oidc_idps.key }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
   labels:
-{% for item in oidc_idps.values() %}
-    app: "{{ item.key }}-socat"
-{% endfor %}
+    app: "{{ oidc_idps.key }}-socat"
 spec:
   ports:
   - port: {{ socat_port }}
     name: tcp
   selector:
-{% for item in oidc_idps.values() %}
-    app: "{{ item.key }}-socat"
-{% endfor %}
+    app: "{{ oidc_idps.key }}-socat"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-{% for item in oidc_idps.values() %}
-  name: "{{ item.key }}-socat"
-{% endfor %}
+  name: "{{ oidc_idps.key }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -47,9 +39,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-{% for item in oidc_idps.values() %}
-  name: "{{ item.key }}-socat"
-{% endfor %}
+  name: "{{ oidc_idps.key }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -57,21 +47,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-{% for item in oidc_idps.values() %}
-      app: "{{ item.key }}-socat"
-{% endfor %}
+      app: "{{ oidc_idps.key }}-socat"
   template:
     metadata:
       labels:
-{% for item in oidc_idps.values() %}
-        app: "{{ item.key }}-socat"
-{% endfor %}
+        app: "{{ oidc_idps.key }}-socat"
     spec:
       serviceAccountName: {{ socat_serviceaccount_name }}
       containers:
-{% for item in oidc_idps.values() %}
-      - name: "{{ item.key }}-socat"
-{% endfor %}
+      - name: "{{ oidc_idps.key }}-socat"
         image: {{ socat_image }}
         args:
         - -d
@@ -82,9 +66,7 @@ spec:
         imagePullPolicy: {{ socat_image_pullpolicy }}
         envFrom:
         - configMapRef:
-{% for item in oidc_idps.values() %}
-            name: "{{ item.key }}-socat"
-{% endfor %}
+            name: "{{ oidc_idps.key }}-socat"
 {% if socat_pullsecret is defined %}
       imagePullSecrets:
         - name: {{ socat_pullsecret }}
