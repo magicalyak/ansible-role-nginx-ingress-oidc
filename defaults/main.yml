@@ -28,7 +28,7 @@ oidc_backup: false
 # Default is false
 oidc_headless: false
 
-oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
+oidc_resolver: kube-dns.kube-system.svc.cluster.local
 
 # These need to be changed to your appropriate OIDC configuration
 # This won't work without modification, you must add at least one idp (like idp0 underneath)

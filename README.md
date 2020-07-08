@@ -133,12 +133,12 @@ If you clone this role, create a playbook called nginx-oidc-install-custom.yml a
     ingress_deployment_count: 1                   # number of ingress controllers
     ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
     ingress_pullpolicy: Always                    # container restart policy
-    # socat_enable: true
-    # socat_domain: login.microsoftonline.com:443
-    # socat_namespace: external
-    # socat_proxy_ip: 10.233.65.4
-    # socat_proxy_port: 3128
-    # socat_port: 443
+    # socat_enable: true                              # enable socat for tunneling forward proxy
+    # socat_domain: login.microsoftonline.com:443     # where socat should tunnel including the colon and port
+    # socat_namespace: external                       # namespace for socat service and deployment (default: default)
+    # socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
+    # socat_proxy_port: 3128                          # The port of your forward proxy
+    # socat_port: 443                                 # The port socat shouild listen on (this should be 443)
 
   tasks:
     - include_role:
