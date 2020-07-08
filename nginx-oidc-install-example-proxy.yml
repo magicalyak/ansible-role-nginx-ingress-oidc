@@ -32,7 +32,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
-        oidc_socat_hostname: "socat.external.svc.cluster.local"   # socat service name
+        oidc_socat_hostname: "login.microsoftonline.com"   # host header we want to push
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"

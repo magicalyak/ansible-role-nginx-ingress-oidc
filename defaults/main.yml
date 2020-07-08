@@ -64,7 +64,7 @@ oidc_idps:
   #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
   #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
   #   oidc_hmac_key: ThisHMACNeedsToBeUnique2
-  #   oidc_socat_hostname: socat.external.svc.cluster.local  # for socat tunneling where forward proxy is present
+  #   oidc_socat_hostname: login.microsoftonline.com
 
 # For customizing the kube-dns or coredns internal name for headless
 oidc_kube_dns: kube-dns.kube-system.svc.cluster.local
