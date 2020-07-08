@@ -51,7 +51,7 @@ data:
 {% if socat_enable %}
 {% for idp in oidc_idps.values() %}
 {% if idp.oidc_socat_enable %}
-        [% idp.hostname %] [% idp.oidc_jwt_keyfile | regex_replace(idp.oidc_jwt_keyfile | urlsplit('hostname'), idp.oidc_socat_service) %];
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile | regex_replace(idp.oidc_jwt_keyfile | urlsplit('hostname'), idp.hostname-socat.socat_namespace|default('nginx-ingress').svc.oidc_kube_dns|regex_replace(.*\.svc\.(.*), '\\1')) %];
 {% else %}
         [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
 {% endif %}
