@@ -56,7 +56,6 @@
     #  port: 9113
     ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
     ingress_pullpolicy: Always                    # container restart policy
-
     socat_enable: true                              # enable socat for tunneling forward proxy
     socat_namespace: nginx-ingress                  # namespace for socat service and deployment (default: default)
     socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy

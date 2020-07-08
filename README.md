@@ -177,6 +177,7 @@ Create the configmaps (these shouldn't change after you import the first time)
 NGINX_K8S_GIT_DIR=/home/centos/git/kubernetes-ingress
 NGINX_K8S_OIDC_DIR=/home/centos/nginc-openid-connect
 cd $NGINX_K8S_GIT_DIR/deployments
+git checkout v1.7.2
 kubectl apply -f common/ns-and-sa.yaml
 kubectl apply -f rbac/rbac.yaml
 kubectl apply -f common/default-server-secret.yaml
@@ -210,7 +211,11 @@ NGINX_K8S_OIDC_DIR=/home/centos/nginx-openid-connect
 #kubectl apply -f common/ts-definition.yaml
 #kubectl apply -f common/gc-definition.yaml
 #kubectl apply -f common/global-configuration.yaml
+#kubectl delete configmap -n nginx-ingress openid-connect.js
+#kubectl delete configmap -n nginx-ingress openid-connect.server-conf
 cd $NGINX_K8S_OIDC_DIR
+#kubectl create configmap -n nginx-ingress openid-connect.js --from-file=openid_connect.js
+#kubectl create configmap -n nginx-ingress openid-connect.server-conf --from-file=openid_connect.server_conf
 kubectl apply -f nginx-config.yaml
 #kubectl apply -f nginx-plus-ingress.yaml
 ```
