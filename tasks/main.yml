@@ -28,9 +28,10 @@
 - name: Create socat.yaml
   template:
     src: socat.yaml.j2
-    dest: "{{ oidc_files_location }}/socat.yaml"
+    dest: "{{ oidc_files_location }}/{{ item.key }}-socat.yaml"
     backup: "{{ oidc_backup }}"
-  when: socat_enable
+  when: "{{ item.value.oidc_socat_enable }}"
+  loop: "{{ lookup('dict', oidc_idps) }}"
 
 - name: Create headless.yaml
   template:

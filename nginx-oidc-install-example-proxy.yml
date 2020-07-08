@@ -33,7 +33,7 @@
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
         oidc_socat_enable: true                                # Used for having tunneling
-        oidc_socat_service: "socat.external.svc.k8s.nginx.net" # matches socat service name
+        oidc_socat_service: "socat.external.svc.cluster.local" # matches socat service name
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
