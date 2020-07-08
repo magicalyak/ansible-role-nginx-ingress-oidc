@@ -33,7 +33,6 @@
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
         oidc_socat_enable: true                                # Used for having tunneling
-        oidc_socat_service: "socat.external.svc.cluster.local" # matches socat service name
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -60,7 +59,7 @@
 
     socat_enable: true                              # enable socat for tunneling forward proxy
     socat_domain: login.microsoftonline.com:443     # where socat should tunnel including the colon and port
-    socat_namespace: external                       # namespace for socat service and deployment (default: default)
+    socat_namespace: nginx-ingress                  # namespace for socat service and deployment (default: default)
     socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
     socat_proxy_port: 3128                          # The port of your forward proxy
     socat_port: 443                                 # The port socat shouild listen on (this should be 443)

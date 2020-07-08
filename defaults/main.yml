@@ -89,8 +89,6 @@ ingress_pullpolicy: Always                    # container restart policy
 # Only works if socat_enable:true
 socat_enable: false
 # socat_namespace: nginx-ingress              # namespace for kube to use
-socat_name: socat                             # name to use for pod and app
-socat_configmap_name: socat-config            # name to use for configmap
 socat_app_name: socat                         # name to use for app= name
 socat_serviceaccount_name: socat              # name to use for socat service account
 socat_domain: login.microsoftonline.com:443   # our token/jwtkey URL we need to proxy
