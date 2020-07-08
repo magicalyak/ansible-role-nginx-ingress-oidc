@@ -9,23 +9,23 @@ metadata:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ socat_name }}
+  name: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
   labels:
-    app: {{ socat_app_name }}
+    app: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 spec:
   ports:
   - port: {{ socat_port }}
     name: tcp
   selector:
-    app: {{ socat_app_name }}
+    app: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ socat_configmap_name }}
+  name: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -39,7 +39,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ socat_name }}
+  name: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 {% if socat_namespace is defined %}
   namespace: {{ socat_namespace }}
 {% endif %}
@@ -47,29 +47,27 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ socat_app_name }}
+      app: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
   template:
     metadata:
       labels:
-        app: {{ socat_app_name }}
+        app: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
     spec:
       serviceAccountName: {{ socat_serviceaccount_name }}
       containers:
-      - name: {{ socat_name }}
+      - name: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
         image: {{ socat_image }}
         args:
         - -d
         - -d
-        - -lf
-        - /var/log/socat.log
-        - "{{" TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork "}}"
-        - "{{" PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH) "}}"
+        - -v
+        - "{{"TCP4-LISTEN:$(SOCAT_PORT),reuseaddr,fork"}}"
+        - "{{"PROXY:$(PROXY_IP):$(DOMAIN),proxyport=$(PROXY_PORT),proxyauth=$(PROXY_AUTH)"}}"
         imagePullPolicy: {{ socat_image_pullpolicy }}
         envFrom:
         - configMapRef:
-            name: {{ socat_configmap_name }}
+            name: "{{ item.value.hostname | regex_replace('\\.', '-') }}-socat"
 {% if socat_pullsecret is defined %}
       imagePullSecrets:
         - name: {{ socat_pullsecret }}
 {% endif %}
-    

@@ -32,15 +32,35 @@ data:
     }
 
     map $host $oidc_token_endpoint {
+{% if socat_enable %}
+{% for idp in oidc_idps.values() %}
+{% if idp.oidc_socat_enable %}
+        [% idp.hostname %] [% idp.oidc_token_endpoint | regex_replace(idp.oidc_token_endpoint | urlsplit('hostname'), (idp.hostname | regex_replace('\\.', '-')) + "-socat." + socat_namespace|default('nginx-ingress') + ".svc." + oidc_namespace) %];
+{% else %}
+        [% idp.hostname %] [% idp.oidc_token_endpoint %];
+{% endif %}
+{% endfor %}
+{% else %}
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% idp.oidc_token_endpoint %];
 {% endfor %}
+{% endif %}
     }
 
     map $host $oidc_jwt_keyfile {
+{% if socat_enable %}
+{% for idp in oidc_idps.values() %}
+{% if idp.oidc_socat_enable %}
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile | regex_replace((idp.oidc_jwt_keyfile | urlsplit('hostname')), (idp.hostname | regex_replace('\\.', '-')) + "-socat." + socat_namespace|default('nginx-ingress') + ".svc." + oidc_namespace) %];
+{% else %}
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
+{% endif %}
+{% endfor %}
+{% else %}
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
 {% endfor %}
+{% endif %}
     }
 
     map $host $oidc_client {
@@ -76,10 +96,18 @@ data:
 {% endfor %}
     }
 
+{% if socat_enable is sameas true %}
+    map $host $oidc_socat_host {
+        # This should be the socat service dns name for tunnelling
+{% for idp in oidc_idps.values() %}
+        [% idp.hostname %] [% idp.oidc_authz_endpoint | urlsplit('hostname') %];
+{% endfor %}        
+    } 
+{% endif %}
+
     map $scheme $oidc_cookie_flags {
         http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
-        # https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
-        https "Path=/; SameSite=lax; HttpOnly;"; # Production recommendation
+        https "Path=/; SameSite=lax; HttpOnly; Secure;"; # Production recommendation
     }
 
     # JWK Set will be fetched from $oidc_jwks_uri and cached here - ensure writable by nginx user
