@@ -25,19 +25,12 @@
     dest:  "{{ oidc_files_location }}/openid_connect.server_conf"
     backup: "{{ oidc_backup }}"
 
-- name: Create tunnel socat.yaml
+- name: Create socat.yaml
   template:
     src: socat.yaml.j2
     dest: "{{ oidc_files_location }}/socat.yaml"
     backup: "{{ oidc_backup }}"
   when: socat_enable
-
-- name: Reminder of coredns modification
-  debug:
-    msg: "add the following line in the corends configmap under ready.\nrewrite name login.microsoftonline.com socat.external.svc.cluster.local"
-  when:
-    - socat_enable
-    - socat_coredns
 
 - name: Create headless.yaml
   template:
