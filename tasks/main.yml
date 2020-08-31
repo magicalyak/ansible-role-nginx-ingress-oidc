@@ -1,5 +1,8 @@
 ---
 # tasks file for nginx-k8s-oidc
+- name: Get short namespace value
+  set_fact:
+    oidc_namespace: "{{ oidc_kube_dns | regex_search('(?<=\\.svc\\.)(.*)') }}"
 
 - name: Create nginx-config.yaml
   template:
@@ -24,6 +27,14 @@
     src: openid_connect.server_conf.j2
     dest:  "{{ oidc_files_location }}/openid_connect.server_conf"
     backup: "{{ oidc_backup }}"
+
+- name: Create socat.yaml
+  template:
+    src: socat.yaml.j2
+    dest: "{{ oidc_files_location }}/{{ item.value.hostname | regex_replace('\\.', '-') }}-socat.yaml"
+    backup: "{{ oidc_backup }}"
+  when: item.value.oidc_socat_enable
+  loop: "{{ oidc_idps|dict2items }}"
 
 - name: Create headless.yaml
   template:

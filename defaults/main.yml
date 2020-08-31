@@ -3,7 +3,7 @@
 
 # Repos to use when automated upstream updating is added
 kubernetes_ingress_github: https://github.com/nginxinc/kubernetes-ingress.git
-kubernetes_ingress_version: v1.7.1
+kubernetes_ingress_version: v1.7.2
 nginx_openid_connect_github: https://github.com/nginxinc/nginx-openid-connect.git
 nginx_openid_connect_version: R22
 
@@ -28,7 +28,7 @@ oidc_backup: false
 # Default is false
 oidc_headless: false
 
-oidc_resolver: 8.8.8.8        # 8.8.8.8 is the default
+oidc_resolver: kube-dns.kube-system.svc.cluster.local
 
 # These need to be changed to your appropriate OIDC configuration
 # This won't work without modification, you must add at least one idp (like idp0 underneath)
@@ -44,6 +44,7 @@ oidc_idps:
   #   #oidc_scopes: "openid+profile+email+offline_access"
   #   oidc_logout_redirect: "http://127.0.0.1:8080/auth/realms/master/protocol/openid-connect/logout"
   #   oidc_hmac_key: kn_3VLh]1I3ods*[DDmMxNmg8xxx
+  #   oidc_socat_enable: false
   # idp1:
   #   hostname: cafe.nginx.net
   #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -53,6 +54,7 @@ oidc_idps:
   #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne"
   #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
   #   oidc_hmac_key: ThisHMACNeedsToBeUnique
+  #   oidc_socat_enable: true
   # idp2:
   #   hostname: cafe.example.com
   #   oidc_authz_endpoint: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/authorize"
@@ -62,6 +64,7 @@ oidc_idps:
   #   oidc_client_secret: "PourSomeSecretsOnMeButDontUseThisOne2"
   #   oidc_logout_redirect: "https://login.microsoftonline.com/dd3dfd2f-6a3b-40d1-9be0-tenantid/oauth2/v2.0/logout"
   #   oidc_hmac_key: ThisHMACNeedsToBeUnique2
+  #   oidc_socat_enable: false
 
 # For customizing the kube-dns or coredns internal name for headless
 oidc_kube_dns: kube-dns.kube-system.svc.cluster.local
@@ -69,7 +72,7 @@ oidc_headless_dns:  nginx-ingress-headless.nginx-ingress.svc.cluster.local
 oidc_keyval_size: 1M                          # keyval store size (1M)
 oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
 oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
-oidc_errorlog_level: debug                    # set to desired level debug then notice for production
+oidc_errorlog_level: error                    # set to desired level debug then notice for production https://nginx.org/en/docs/ngx_core_module.html#error_log
 ingress_container_pullsecret: regcred         # Used for dockerhub credentials (if undefined this is not used)
 ingress_allow_cidr: 0.0.0.0/0                 # Range for status page (if undefined this is disabled) - 0.0.0.0/0 is not secure change for production
 
@@ -81,3 +84,17 @@ ingress_type: deployment                      # deployment or replicaset
 ingress_deployment_count: 4                   # number of ingress controllers
 ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
 ingress_pullpolicy: Always                    # container restart policy
+
+# Tunneling ports for forward proxy - Generates a socat.yaml to deploy socat
+# Only works if socat_enable:true
+socat_enable: false
+# socat_namespace: nginx-ingress              # namespace for kube to use
+socat_app_name: socat                         # name to use for app= name
+socat_serviceaccount_name: socat              # name to use for socat service account
+socat_proxy_auth: root:root                   # this should be unchanged unless you have a username:password
+socat_proxy_ip: 10.233.105.159                # IP for our forward proxy
+socat_proxy_port: 3128                        # port for our forward proxy
+socat_port: 443                               # port socat listens on
+socat_image: alpine/socat                     # image to use (assumes socat runs by default)
+# socat_pullsecret: rekcod                    # enable to use a container pullsecret
+socat_image_pullpolicy: Always                # Change to IfNotPresent if desired

@@ -5,11 +5,12 @@
   vars:
     replace_http_custom: True
     apply_nginx_config: False
-    oidc_files_location: "."                          # Where we place our generated files
-    oidc_backup: false                                # Save copies of previous files
-    oidc_headless: true                               # For multiple ingress keyvalue store sync (comment out if not desired)
+    apply_socat_config: False             # Apply the socat service and deployment
+    oidc_files_location: "."              # Where we place our generated files
+    oidc_backup: false                    # Save copies of previous files
+    oidc_headless: true                   # For multiple ingress keyvalue store sync (comment out if not desired)
     # oidc_external_status_address: 172.16.186.100
-    oidc_resolver: 8.8.8.8                            # default is kube-dns.kube-system.svc.cluster.local
+    oidc_resolver: coredns.kube-system.svc.cluster.local  # default is kube-dns.kube-system.svc.cluster.local
     oidc_idps:
       idp0:                       # these names are placeholders, suggest to use idp$i where $i is an incremental number
                                   # You could use the hostname or the client_id if you want, just make this unique per group
@@ -21,6 +22,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_enable: false                          # Used for not having tunneling
       idp1:
         hostname: cafe.nginx.net
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -30,6 +32,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_enable: true                                # Used for having tunneling
       idp2:
         hostname: cafe.example.com
         oidc_authz_endpoint: "https://##REPLACEME##/authorize"
@@ -39,6 +42,7 @@
         oidc_client_secret: "##SECRET##"
         oidc_logout_redirect: "https://##REPLACEME##/logout"
         oidc_hmac_key: vC5FabzvYvFZFBzxtRCYDYX+
+        oidc_socat_enable: false                          # Used for not having tunneling
     oidc_keyval_size: 1M                          # keyval store size (1M)
     oidc_keyval_id_timeout: 1h                    # keyval id timeout (1h)
     oidc_keyval_refresh_timeout: 8h               # keyval refresh timeout (8h)
@@ -52,6 +56,11 @@
     #  port: 9113
     ingress_imagename: magicalyak/nginx-plus:OIDC # container image name
     ingress_pullpolicy: Always                    # container restart policy
+    socat_enable: true                              # enable socat for tunneling forward proxy
+    socat_namespace: nginx-ingress                  # namespace for socat service and deployment (default: default)
+    socat_proxy_ip: 10.233.65.4                     # The IP or dns of your forward proxy
+    socat_proxy_port: 3128                          # The port of your forward proxy
+
 
   tasks:
     - include_role:
@@ -75,3 +84,9 @@
         state: present
         src: "{{ oidc_files_location }}/nginx-config.yaml"
       when: apply_nginx_config
+
+    - name: Apply tunnel socat.yaml
+      k8s:
+        state: present
+        src: "{{ oidc_files_location }}/socat.yaml"
+      when: apply_socat_config

@@ -27,20 +27,40 @@ data:
 
     map $host $oidc_authz_endpoint {
 {% for idp in oidc_idps.values() %}
-        "[% idp.hostname %]" [% idp.oidc_authz_endpoint %];
+        [% idp.hostname %] [% idp.oidc_authz_endpoint %];
 {% endfor %}
     }
 
     map $host $oidc_token_endpoint {
+{% if socat_enable %}
+{% for idp in oidc_idps.values() %}
+{% if idp.oidc_socat_enable %}
+        [% idp.hostname %] [% idp.oidc_token_endpoint | regex_replace(idp.oidc_token_endpoint | urlsplit('hostname'), (idp.hostname | regex_replace('\\.', '-')) + "-socat." + socat_namespace|default('nginx-ingress') + ".svc." + oidc_namespace) %];
+{% else %}
+        [% idp.hostname %] [% idp.oidc_token_endpoint %];
+{% endif %}
+{% endfor %}
+{% else %}
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% idp.oidc_token_endpoint %];
 {% endfor %}
+{% endif %}
     }
 
     map $host $oidc_jwt_keyfile {
+{% if socat_enable %}
+{% for idp in oidc_idps.values() %}
+{% if idp.oidc_socat_enable %}
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile | regex_replace((idp.oidc_jwt_keyfile | urlsplit('hostname')), (idp.hostname | regex_replace('\\.', '-')) + "-socat." + socat_namespace|default('nginx-ingress') + ".svc." + oidc_namespace) %];
+{% else %}
+        [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
+{% endif %}
+{% endfor %}
+{% else %}
 {% for idp in oidc_idps.values() %}
         [% idp.hostname %] [% idp.oidc_jwt_keyfile %];
 {% endfor %}
+{% endif %}
     }
 
     map $host $oidc_client {
@@ -75,6 +95,15 @@ data:
         [% idp.hostname %] [% idp.oidc_hmac_key %];
 {% endfor %}
     }
+
+{% if socat_enable is sameas true %}
+    map $host $oidc_socat_host {
+        # This should be the socat service dns name for tunnelling
+{% for idp in oidc_idps.values() %}
+        [% idp.hostname %] [% idp.oidc_authz_endpoint | urlsplit('hostname') %];
+{% endfor %}        
+    } 
+{% endif %}
 
     map $scheme $oidc_cookie_flags {
         http  "Path=/; SameSite=lax;"; # For HTTP/plaintext testing
@@ -236,7 +265,7 @@ data:
         {{- $oidc_error_message := index $.Ingress.Annotations "custom.nginx.org/oidc-error-message"}}
         set $internal_error_message [% '"NGINX / OpenID Connect login failure";' %]
 
-        {{- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver-address"}}
+        {{- $oidc_resolver := index $.Ingress.Annotations "custom.nginx.org/oidc-resolver"}}
         resolver [% oidc_resolver %];
         
         {{- $oidc_subrequest_output_buffer_size := index $.Ingress.Annotations "custom.nginx.org/oidc-subrequest-output-buffer-size"}}
