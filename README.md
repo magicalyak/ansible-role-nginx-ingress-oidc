@@ -28,6 +28,7 @@ This role assumes you have already stood up Kubernetes.  This was tested with 1.
 **OIDC IDP**
 
 This role assumes you have already setup your OIDC and OAuth2 provider.  An older walkthrough on some of this is available [here](https://www.nginx.com/blog/nginx-plus-ingress-controller-for-kubernetes-openid-connect-azure-ad/#idp).
+The official implementation for NGINX is [here](https://github.com/nginxinc/nginx-openid-connect).
 
 Role Variables
 --------------
