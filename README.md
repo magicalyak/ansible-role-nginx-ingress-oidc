@@ -23,7 +23,7 @@ This role assumes you have built the NGINX Plus Ingress with R22 and added the n
 
 **Kubernetes**
 
-This role assumes you have already stood up Kubernetes.  This was tested with 1.15, 1.16 and 1.17 so far.
+This role assumes you have already stood up Kubernetes.  This was tested with 1.15, 1.16, 1.17, and 1.18 so far.
 
 **OIDC IDP**
 
