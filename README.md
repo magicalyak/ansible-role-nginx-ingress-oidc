@@ -23,7 +23,7 @@ This role assumes you have built the NGINX Plus Ingress with R22 and added the n
 
 **Kubernetes**
 
-This role assumes you have already stood up Kubernetes.  This was tested with 1.15, 1.16, 1.17, and 1.18 so far.
+This role assumes you have already stood up Kubernetes.  This was tested with 1.15, 1.16, 1.17, and 1.18, 1.19 so far.
 
 **OIDC IDP**
 
@@ -178,7 +178,7 @@ Create the configmaps (these shouldn't change after you import the first time)
 NGINX_K8S_GIT_DIR=/home/centos/git/kubernetes-ingress
 NGINX_K8S_OIDC_DIR=/home/centos/nginc-openid-connect
 cd $NGINX_K8S_GIT_DIR/deployments
-git checkout v1.7.2
+git checkout v1.9.1
 kubectl apply -f common/ns-and-sa.yaml
 kubectl apply -f rbac/rbac.yaml
 kubectl apply -f common/default-server-secret.yaml
