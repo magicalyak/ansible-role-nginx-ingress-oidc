@@ -6,6 +6,8 @@ Ansible NGINX Ingress OIDC Role
 
 This role creates files for using OpenID Connect with NGINX Plus in Kubernetes.  The role should be idempotent (it can run over itself detecting changes). The goal of the role is to allow you to automate multiple IDPs for OIDC in Kubernetes.  This involves generating the nginx-config.yaml and applying it afterwards (this role just generates the file for now).
 
+**Note:** NGINX Plus Kubernetes Ingress Controller (KIC) has a [technology preview of OIDC](https://www.nginx.com/blog/easy-robust-sso-openid-connect-nginx-ingress-controller/#oidc) since 1.10.
+
 **Note:** This role is still in active development. There may be unidentified issues and the role variables may change as development continues.
 
 Requirements
